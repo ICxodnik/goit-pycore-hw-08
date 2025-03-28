@@ -4,25 +4,27 @@ import re #reg
 class Field:
 
     def __init__(self, value):
+        self._validate(value)
         self.value = value
     
     def __str__(self):
         return str(self.value)
+    
+    def _validate(self, value):
+        """Метод валідації, перевизначається в підклассах."""
+        pass
 
 class Name(Field):
 
-    def __init__(self, value):
-        if not value:
+    def _validate(self, value):
+        if not value.strip():
             raise ValueError("Імʼя не може бути порожнім")
-        super().__init__(value)
 
 class Phone(Field):
 
-    def __init__(self, value):
+    def _validate(self, value):
         if not re.fullmatch(r"\d{10}", value):
             raise ValueError("Номер телефону має мати 10 символів")
-        super().__init__(value)
-
 class Record:
 
     def __init__(self, name):
@@ -33,7 +35,11 @@ class Record:
         self.phones.append(Phone(phone))
     
     def remove_phone(self, phone):
-        self.phones = [p for p in self.phones if p.value != phone]
+        phone_obj = self.find_phone(phone)
+        if phone_obj:
+            self.phones.remove(phone_obj)
+        else:
+            raise ValueError(f"Номер {phone} не знайдено")
     
     def edit_phone(self, old_phone, new_phone):
         for p in self.phones:
@@ -52,10 +58,6 @@ class Record:
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
-    
-    def __init__(self):
-        self.data = {}
-
     def add_record(self, record):
         self.data[record.name.value] = record
     
@@ -65,6 +67,11 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
+
+    def list_records(self):
+        if not self.data:
+            return "Немає записів"
+        return "\n".join(str(record) for record in self.data.values())
 
 if __name__ == "__main__":
 # Створення нової адресної книги
