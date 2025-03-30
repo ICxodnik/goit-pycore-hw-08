@@ -1,35 +1,47 @@
 from collections import UserDict
-import re #reg
+import re
+from datetime import datetime
 
-class Field:
+class Field[T]:
 
     def __init__(self, value):
-        self._validate(value)
-        self.value = value
+        self.value = self._validate(value)
     
     def __str__(self):
         return str(self.value)
     
-    def _validate(self, value):
+    def _validate(self, value) -> T:
         """Метод валідації, перевизначається в підклассах."""
         pass
 
-class Name(Field):
+class Name(Field[str]):
 
     def _validate(self, value):
         if not value.strip():
             raise ValueError("Імʼя не може бути порожнім")
+        return value
 
-class Phone(Field):
+class Phone(Field[str]):
 
     def _validate(self, value):
         if not re.fullmatch(r"\d{10}", value):
             raise ValueError("Номер телефону має мати 10 символів")
+        return value
+
+class Birthday(Field[datetime]):
+        
+    def _validate(self, value):
+        try:
+            return datetime.strptime(value, "%d.%m.%Y")
+        except ValueError:
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")
+
 class Record:
 
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.birthday = None
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
@@ -53,6 +65,9 @@ class Record:
             if p.value == phone:
                 return p
         return None
+    
+    def add_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
     
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
