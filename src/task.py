@@ -32,7 +32,7 @@ class Birthday(Field[datetime]):
         
     def _validate(self, value):
         try:
-            return datetime.strptime(value, "%d.%m.%Y")
+            return datetime.strptime(value, "%d.%m.%Y").date()
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
@@ -116,8 +116,8 @@ class AddressBook(UserDict):
 
         return cong_list
 
-if __name__ == "__main__":
-# Створення нової адресної книги
+def test():
+    # Створення нової адресної книги
     book = AddressBook()
 
     # Створення запису для John
@@ -157,3 +157,6 @@ if __name__ == "__main__":
 
     # Видалення запису Jane
     book.delete("Jane")
+    
+if __name__ == "__main__":
+    test()
