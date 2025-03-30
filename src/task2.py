@@ -1,3 +1,4 @@
+from storage import load_data, save_data
 from task import AddressBook, Record
 
 def input_error(func):
@@ -78,7 +79,7 @@ def birthdays(args, book):
         print(f"{user['name']} - {user['congratulation_date'].strftime('%d.%m.%Y')}")
     
 def main():
-    book = AddressBook()
+    book = load_data()
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -114,6 +115,8 @@ def main():
 
         else:
             print("Invalid command.")
+
+    save_data(book)
 
 if __name__ == "__main__":
     main()
