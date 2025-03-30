@@ -68,14 +68,14 @@ def show_birthday(args, book):
     record = book.find(name)
     if record is None:
         return "Contact not found."
-    return f"Birthday: {record.birthday.value}"
+    return f"Birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
 
 @input_error
 def birthdays(args, book):
     upcoming_birthdays = book.get_upcoming_birthdays()
     print(f"Список привітань на цей робочий тиждень:")
     for user in upcoming_birthdays:
-        print(f"{user['name']} - {user['congratulation_date']}")
+        print(f"{user['name']} - {user['congratulation_date'].strftime('%d.%m.%Y')}")
     
 def main():
     book = AddressBook()

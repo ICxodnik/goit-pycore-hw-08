@@ -112,7 +112,7 @@ class AddressBook(UserDict):
             if birthday < today or birthday > max_range:
                 continue
 
-            cong_list.append({"name": user.name.value, "congratulation_date": birthday.strftime("%Y.%m.%d")})
+            cong_list.append({"name": user.name.value, "congratulation_date": birthday})
 
         return cong_list
 
@@ -153,7 +153,7 @@ def test():
     
     print(f"Список привітань на цей робочий тиждень:")
     for user in upcoming_birthdays:
-        print(f"{user['name']} - {user['congratulation_date']}")
+        print(f"{user['name']} - {user['congratulation_date'].strftime('%d.%m.%Y')}")
 
     # Видалення запису Jane
     book.delete("Jane")
